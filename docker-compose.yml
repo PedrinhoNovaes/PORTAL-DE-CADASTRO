@@ -1,0 +1,31 @@
+version: "3.1"
+services:
+  database:
+    image: postgres:14.1-alpine
+    restart: always
+    volumes:
+      - ./scripts/:/docker-entrypoint-initdb.d/:ro
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: mgn
+      POSTGRES_PASSWORD: mgn246
+  backend:
+    build:
+      context: ./backend
+      args:
+        - NODE_ENV=development
+    environment:
+      DATABASE: database
+    ports:
+      - 8080:3000
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     args:
+  #       - NODE_ENV=development
+  #   ports:
+  #     - 80:3000
+networks:
+  default:
+    driver: bridge
